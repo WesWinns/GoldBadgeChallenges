@@ -8,8 +8,9 @@ namespace ChallengeThree_Badges
 {
     public class ProgramUI
     {
-        private bool _isRunning = true;
-        private readonly Badge_Repository _badgeRepo = new Badge_Repository();
+        private bool _isrunning = true;
+        private readonly BadgeRepository _badgeRepository = new BadgeRepository();
+
 
         public void Run()
         {
@@ -17,187 +18,141 @@ namespace ChallengeThree_Badges
             RunMenu();
         }
 
-        public void RunMenu()
+        private void RunMenu()
         {
-            while (_isRunning)
+            while (_isrunning)
             {
-                Console.Clear();
-                Console.WriteLine("1. Add Badge\n" +
-                    "2. Edit Badge\n" +
-                    "3. List all Badges\n" +
-                    "4. Exit\n");
-
-                string userInput = Console.ReadLine();
-
-                switch (userInput)
-                {
-                    case "1":
-                        CreateBadge();
-                        break;
-
-                    case "2":
-                        DisplayAllBadges();
-                        EditBages();
-                        break;
-
-                    case "3":
-                        DisplayAllBadges();
-                        break;
-
-                    case "4":
-                        _isRunning = false;
-                        break;
-
-                    default:
-                        return;
-                }
+                string input = GetMenuSelection();
+                OpenMenuItems(input);
             }
         }
 
-        private void DisplayAllBadges()
+        private string GetMenuSelection()
         {
             Console.Clear();
+            Console.WriteLine("Please enter a number:\n" +
+                "1. List all badges.\n" +
+                "2. Ass a new badge.\n" +
+                "3. Edit a badge\n" +
+                "4. Exit");
 
-            Console.WriteLine("Key");
-            Console.WriteLine($"{"Badge #",-5} \t\t{"Door Access",-5}");
+            string input = Console.ReadLine();
+            return input;
 
-            Dictionary<int, List<string>> badgeList = _badgeRepo.GetAllBadges();
-            foreach (KeyValuePair<int, List<string>> badge in badgeList)
+        }
+
+        private void OpenMenu(string input)
+        {
+            Console.Clear();
+            switch (input)
             {
-                int displayBadgeKey = badge.Key;
-                foreach (string door in badge.Value)
-                {
-                    string displayDoor = door;
-                    Console.WriteLine($"{displayBadgeKey,-7} \t\t{displayDoor,-5} ");
-                }
+                case "1":
+                    ListBadges();
+                    break;
+                case "2":
+                    AddNewBadge();
+                    break;
+                case "3":
+                    EditBadge();
+                    break;
+                case "4":
+                    _isrunning = false;
+                    return;
+                default:
+                    Console.WriteLine("Invalid Selection.");
+                    return;
 
             }
-            Console.WriteLine("\n" +
-                "Press any key to Continue");
+
+            Console.WriteLine("Press any key to return to the main menu.");
             Console.ReadKey();
-
         }
 
-        public void CreateBadge()
+        private void ListBadges()
         {
-            Console.Clear();
-            Console.Write("Enter Badge #: ");
+            var badges = _badgeRepository.GetBadgeDictionary();
+
+            foreach (var badge in badges)
+            {
+                DisplayContent(badge);
+            }
+        }
+
+        private void DisplayContent(KeyValuePair<int, List<string>> badge)
+        {
+            string doors = " ";
+            foreach (var door in badge.Value)
+            {
+                doors = doors + door + " ";
+            }
+            Console.WriteLine($"{badge.Key}\n" +
+                $"{doors}");
+        }
+
+        private void AddNewBadge()
+        {
+            var badge = new Badge();
+
+            Console.WriteLine("Please enter Badge ID:");
             int badgeID = Convert.ToInt32(Console.ReadLine());
+            badge.BadgeID = badgeID;
+            badge.ListOfDoors = GetListOfDoors();
 
-            //List<string> newList = new List<string>();
-            _badgeRepo.CreateBadge(badgeID);
-            AddDoor(badgeID);
+            _badgeRepository.AddBadge(badge);
+        }
 
-            while (_isRunning)
+        private List<string> GetListOfDoors()
+        {
+            Console.WriteLine("Enter access door(s):");
+
+            while (true)
             {
-                Console.WriteLine("\n" +
-                    "Do you want to add more doors?\n" +
-                    "\n" +
-                    "1. Yes\n" +
-                    "2. No\n");
-
-                Console.Write("Enter Selection: ");
-                string userInput = Console.ReadLine();
-
-                switch (userInput)
-                {
-                    case "1":
-                        AddDoor(badgeID);
-                        break;
-                    case "2":
-                        Console.WriteLine("Press any key to return");
-                        RunMenu();
-                        break;
-                    default:
-                        Console.WriteLine("Invalid Selection");
-                        Console.ReadKey();
-                        break;
-
-                }
+                string doorOpens = Console.ReadLine();
+                List<string> doorList = doorOpens.Split(' ').ToList();
             }
         }
 
-        public void AddDoor(int badgeID)
+        private void EditBadge()
         {
-            Console.Write("Add door: ");
-            string doorInput = Console.ReadLine();
-
-            _badgeRepo.AddDoorToBadge(badgeID, doorInput);
-        }
-
-        public void EditBages()
-        {
-            Console.Clear();
-            Console.Write("Enter BadgeID: ");
+            Console.WriteLine("Please Enter Your Badge ID:");
             int badgeID = Convert.ToInt32(Console.ReadLine());
+            var badge = _badgeRepository.GetBadgeDictionary();
 
-            if (_badgeRepo.HasKey(badgeID))
+            string door = " ";
+            foreach (var otherDoor in badge[badgeID])
             {
-                while (_isRunning)
-                {
-                    Console.WriteLine("1. Add door\n" +
-                        "2. Delete door\n" +
-                        "3. Delete all doors\n" +
-                        "4. Main menu\n");
-
-                    string userInput = Console.ReadLine();
-
-                    switch (userInput)
-                    {
-                        case "1":
-                            AddDoor(badgeID);
-                            Console.WriteLine("Door Added");
-                            Console.ReadKey();
-                            break;
-
-                        case "2":
-                            Console.WriteLine("Enter Badge ID: ");
-                            _badgeRepo.GetBadgeByID(badgeID);
-
-                            Console.Write("Enter door to remove: ");
-                            string doorInput = Console.ReadLine();
-                            _badgeRepo.DeleteBadgeDoor(badgeID, doorInput);
-                            Console.WriteLine("Door Deleted");
-                            Console.ReadKey();
-                            break;
-
-                        case "3":
-                            _badgeRepo.DeleteAllDoorsFromBadge(badgeID);
-                            Console.WriteLine("All doors deleted");
-                            Console.ReadKey();
-                            break;
-
-                        case "4":
-                            RunMenu();
-                            break;
-
-                        default:
-                            Console.WriteLine("Invalid Selection");
-                            Console.ReadKey();
-                            break;
-                    }
-                }
+                door = door + door + " ";
             }
-            else
+
+            Console.WriteLine($"Badge {badgeID} has access to doors {door} now.");
+
+            var response = Console.ReadLine();
+            switch (response)
             {
-                Console.WriteLine("Invalid Badge");
-                Console.ReadKey();
+                case "1":
+                    Console.WriteLine("Choose a door to remove.");
+                    string removeDoor = Console.ReadLine();
+                    badge[badgeID].Remove(removeDoor);
+                    Console.WriteLine("Door removed.");
+                    break;
+                case "2":
+                    Console.WriteLine("Choose a door to add.");
+                    string addDoor = Console.ReadLine();
+                    badge[badgeID].Add(addDoor);
+                    Console.WriteLine($"{badgeID} has access to door {addDoor}");
+                    break;
+                default:
+                    Console.WriteLine("Please try again.");
+                    break;
+            }
+
+            private void SeedMenuList()
+            {
+                var badgeOne = new Badge(1, new List<string>() { "B7" });
+                var badgeTwo = new Badge(2, new List<string>() { "A9" });
+                var badgeSeven = new Badge(7, new List<string>() { "C7" });
             }
         }
-
-        public void SeedBadges()
-        {
-            _badgeRepo.CreateBadge(1);
-            _badgeRepo.AddDoorToBadge(1, "A1");
-
-            _badgeRepo.CreateBadge(2);
-            _badgeRepo.AddDoorToBadge(2, "A2");
-
-            _badgeRepo.CreateBadge(3);
-            _badgeRepo.AddDoorToBadge(3, "B1");
-            _badgeRepo.AddDoorToBadge(3, "B2");
-        }
-
-
     }
 }
+

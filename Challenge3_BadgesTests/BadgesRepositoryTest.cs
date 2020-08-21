@@ -1,60 +1,47 @@
 ﻿using System;
+using System.Collections.Generic;
+using Badges;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Challenge3_BadgesTests
+namespace BadgesTests
 {
     [TestClass]
-    public class BadgeRepositoryTests
+    public class BadgeRepositoryTest
     {
-        private BadgeRepository _badgeRepo;
-        private Dictionary<int, List<string>> _dictionary;
+        private BadgeRepository _badgeRepository;
+        private Badge _badge;
 
         [TestInitialize]
         public void Arrange()
         {
-            _badgeRepo = new BadgeRepository();
-            _dictionary = new Dictionary<int, List<string>>();
-            _dictionary.Add(1, new List<string> { "A5", "A7" });
+            _badge = new BadgeRepository();
+            var door = new List<string>() { "B3", "A8", "B2" };
+            _badge = new Badge(1, door);
+            _badgeRepository.GetBadgeDictionary(_badge);
         }
 
         [TestMethod]
-        public void CreateBadgeTest_ShouldReturnCorrect()
+        public void GetBadgeDictionary_ShouldReturn()
         {
-            BadgeRepository repo = new BadgeRepository();
-            List<string> doorsString = new List<string> { "A1", "B5", "C15" };
-            Dictionary<int, List<string>> badge = new Dictionary<int, List<string>>();
-            repo.CreateNewBadge(1, doorsString);
-            int countTest = _badgeRepo.GetBadges().Count;
-            Assert.AreEqual(1, countTest);
+            var badges = _badgeRepository.GetBadgeDictionary();
+
+            Assert.IsTrue(badges.ContainsKey(1));
         }
 
         [TestMethod]
-        public void GetBadges_ShouldReturnCorrectCollection()
+        public void UpdateBadge_ShouldReturnTrue()
         {
-            Arrange();
+            var updatedDoors = new List<string>() { "D3", "C4" };
+            var isUpdated = _badgeRepository.UpdateBadge(1, updatedDoors);
 
-            Dictionary<int, List<string>> directory = _badgeRepo.GetBadges();
-
-            bool directoryHasBadges = directory.ContainsKey(1);
-
-            Assert.IsTrue(directoryHasBadges);
-        }
-
-        [DataTestMethod]
-        [DataRow("D55", true)]
-        public void UpdateBadge_ShouldReturnTrue(string door, bool expectedResult)
-        {
-            bool updateBadge = _badgeRepo.AddDoorToExistingBadge(12345, door);
-
-            Assert.AreEqual(expectedResult, updateBadge);
+            Assert.IsTrue(isUpdated);
         }
 
         [TestMethod]
-        public void DeleteDoor_()
+        public void DeleteBadge_ShouldReturnTrue()
         {
-
+            Assert.IsTrue(_badgeRepository.DeleteBadge(1));
         }
+
     }
-}
-
 }

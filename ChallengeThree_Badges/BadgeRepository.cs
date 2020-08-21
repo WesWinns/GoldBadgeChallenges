@@ -1,77 +1,44 @@
-﻿using System;
+﻿using ChallengeThree_Badges;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChallengeThree_Badges
+namespace Badges
 {
-    public class Badge_Repository
+    public class BadgeRepository
     {
-        public Dictionary<int, List<string>> _badgeList = new Dictionary<int, List<string>>();
+        private readonly Dictionary<int, List<string>> _badgeDictionary = new Dictionary<int, List<string>>();
 
-        // Create badge
-        public void CreateBadge(int badgeID)
+        // Create
+        public void CreateBadge(Badge badge)
         {
-            List<string> listOfDoors = new List<string>();
-            Badge newBadge = new Badge(badgeID, listOfDoors);
-
-            _badgeList.Add(newBadge.BadgeID, newBadge.ListOfDoors);
+            _badgeDictionary.Add(badge.BadgeID, badge.ListOfDoors);
         }
 
-        public void AddDoorToBadge(int badgeID, string door)
+        // Read
+        public Dictionary<int, List<string>> GetBadgeDictionary()
         {
-            _badgeList[badgeID].Add(door);
+            return _badgeDictionary;
         }
 
-
-        // Read all badges
-        public Dictionary<int, List<string>> GetAllBadges()
+        // Update
+        public bool UpdateBadge(int badgeId, List<string> updatedListOfDoors)
         {
-            return _badgeList;
-        }
-
-        // Delete single door
-        public void DeleteBadgeDoor(int badgeID, string door)
-        {
-            _badgeList[badgeID].Remove(door);
-        }
-
-        // Delete all doors from badge
-        public void DeleteAllDoorsFromBadge(int badgeID)
-        {
-            _badgeList[badgeID].Clear();
-        }
-
-        public bool HasKey(int key)
-        {
-            bool validKey = _badgeList.ContainsKey(key);
-            if (validKey)
+            if (_badgeDictionary.ContainsKey(badgeId))
             {
+                _badgeDictionary[badgeId] = updatedListOfDoors;
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
-        // Helper       --------------------- Not sure if need a helper????
-        public Badge GetBadgeByID(int badgeID)
+        // Delete
+        public bool DeleteBadge(int badgeID)
         {
-            foreach (var badge in _badgeList)
-            {
-                if (badge.Key == badgeID)
-                {
-                    //instantiate a new badge
-                    Badge newBadge = new Badge(badge.Key, badge.Value);
-
-                    //assign the Key for this kvp to the badge's ID
-                    //assign the Value of this kvp to the badges List of strings
-                    return newBadge;
-                }
-            }
-            return null;
+            return _badgeDictionary.Remove(badgeID);
         }
     }
 }

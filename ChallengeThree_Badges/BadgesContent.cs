@@ -9,13 +9,14 @@ namespace ChallengeThree_Badges
     public class Badge
     {
         public int BadgeID { get; set; }
-        public List<string> ListOfDoors = new List<string>();
+        public List<string> ListOfDoors { get; set; }
 
         public Badge() { }
         public Badge(int badgeID, List<string> listOfDoors)
         {
             BadgeID = badgeID;
             ListOfDoors = listOfDoors;
+
         }
     }
 }

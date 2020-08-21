@@ -15,7 +15,6 @@ namespace ChallengeTwo_Claims
         private readonly ClaimsRepository _claimsRepository = new ClaimsRepository();
         public void Run()
         {
-            ClaimList();
             Menu();
         }
 
@@ -40,7 +39,7 @@ namespace ChallengeTwo_Claims
                         DisplayAllClaims();
                         break;
                     case "2":
-                        TakeCareOfNextClaim();
+                        //TakeCareOfNextClaim();
                         break;
                     case "3":
                         CreateNewClaim();
@@ -85,38 +84,6 @@ namespace ChallengeTwo_Claims
                 $"Is the claim valid: {claimContent.IsValid}\n");
         }
 
-
-        /*private void TakeCareOfNextClaim()
-        {
-            Console.Clear();
-            Queue<Claim> claimQueue = _claimsRepository.GetClaimByClaimID();
-            bool nextClaimBool = true;
-            while (nextClaimBool)
-            {
-                if (claimQueue.Count > 0)
-                {
-                    var next = claimQueue.Peek();
-                    DisplayClaim(next);
-                }
-                Console.WriteLine("Do you want to deal with this claim now (y/n):");
-                string userInput = Console.ReadLine();
-                if (userInput == "y")
-                {
-                    claimQueue.Dequeue();
-                }
-                else if (userInput == "n")
-                {
-                    nextClaimBool = false;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid Input.");
-                }
-            }
-        }*/
-
-
-
         public void CreateNewClaim()
         {
             Console.Clear();
@@ -124,14 +91,14 @@ namespace ChallengeTwo_Claims
             Console.WriteLine("Enter the Claim ID number: ");
             int id = int.Parse(Console.ReadLine());
 
-            Console.WriteLine("Enter the Claim Type: ");
-            ClaimType claimType = ClaimType();
+            //Console.WriteLine("Enter the Claim Type: ");
+            //ClaimType claimType = ClaimType();
 
             Console.WriteLine("Enter a description of the accident:");
             string Description = Console.ReadLine();
 
             Console.WriteLine("Enter the amount of Damage:");
-            double ClaimAmount = double.Parse(Console.ReadLine();
+            double ClaimAmount = double.Parse(Console.ReadLine());
 
             Console.WriteLine("Enter the Date of the incident:");
             DateTime DateOfIncident = DateTime.Parse(Console.ReadLine());
@@ -143,17 +110,6 @@ namespace ChallengeTwo_Claims
             string IsValid = Console.ReadLine();
         }
 
-            //if(IsValid == true)
-            //{
-            //   IsValid = true;
-            //}
-            //else
-            //{
-            //    IsValid = false;
-            //}
-
-            //Claim newClaim = new Claim(id, claimType, Description, ClaimAmount, DateOfIncident, DateOfClaim);
-            //_claimsRepository.AddClaimToList(newClaim);
 
         private ClaimType GetClaimType()
         {
@@ -229,38 +185,6 @@ namespace ChallengeTwo_Claims
             string claimDateInput = Console.ReadLine();
             DateTime dateOfClaim = Convert.ToDateTime(claimDateInput);
 
-            Claim newClaim = new Claim(id, claimType, description, claimAmount, dateOfIncident, dateOfClaim);
-
-
-            bool wasUpdated = _claimsRepository.UpdateClaim(oldclaim, newClaim);
-
-            if (wasUpdated)
-            {
-                Console.WriteLine("Claim updated!");
-            }
-            else
-            {
-                Console.WriteLine("Could not update claim.");
-            }
-
-        }
-
-
-        private void DeleteExistingClaim()
-        {
-
-        }
-
-        private void ClaimList()
-        {
-            Claim claim1 = new Claim(1, ClaimTypes.Car, "Car accident on 464", 400d, new DateTime(2018, 04, 25), new DateTime(2018, 04, 27));
-            Claim claim2 = new Claim(2, ClaimTypes.Home, "House fire in kitchen", 4000d, new DateTime(2018, 04, 11), new DateTime(2018, 04, 12));
-            Claim claim3 = new Claim(3, ClaimTypes.Theft, "Stolen pancakes", 4d, new DateTime(2018, 04, 27), new DateTime(2018, 06, 01));
-
-            _claimsRepository.AddClaimToList(claim1);
-            _claimsRepository.AddClaimToList(claim2);
-            _claimsRepository.AddClaimToList(claim3);
-            
         }
     }
 }
