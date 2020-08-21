@@ -4,7 +4,6 @@ Challenge One: Cafe
 
 Bugs: Cannot Delete content correctly, but UI works.
       Not completely sure if all Unit Test needs are met.
-      
       Potential Issues: Names are a little complicated.  It is difficult for me to remember their references 
       if I spend time away from the code.
       
